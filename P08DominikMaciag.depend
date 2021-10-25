@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1635168587 source:d:\studia\inzynieria i analiza danych\i semestr\algorytymy\projekt1\main.cpp
+	<iostream>
+	<vector>
+	<chrono>
+	<fstream>
+

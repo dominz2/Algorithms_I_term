@@ -3,6 +3,8 @@ elements in spiral direction */
 
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <fstream>
 
 using namespace std;
 
@@ -114,9 +116,28 @@ void spiral_spin(vector<vector<int>> &table)
     table[0][0] = prev;
 }
 
+void save_table_to_txt (vector<vector<int>> &table)
+{
+    int i, j;
+    ofstream table_txt;
+    table_txt.open("table.txt");
+    for (j = 0; j < table.size(); j++)
+    {
+
+        for(i = 0; i < table[0].size(); i++)
+        {
+            table_txt << table[j][i] << " ";
+        }
+    table_txt << endl;
+    }
+    table_txt.close();
+}
+
+
 
 int main()
 {
+
     vector<vector<int>> table;
     create_table(table);
     fill_table(table);
@@ -125,5 +146,7 @@ int main()
     cout<<endl;
     cout<<"Table after spin";
     print_table(table);
+    save_table_to_txt(table);
+
     return 0;
 }
