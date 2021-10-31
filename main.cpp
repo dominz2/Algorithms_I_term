@@ -7,8 +7,11 @@ elements in spiral direction */
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <iomanip>
 
 using namespace std;
+using namespace std::chrono;
+
 
 
 /*
@@ -214,20 +217,60 @@ void save_table_to_txt (vector<vector<int>> &table)
     table_txt.close();
 }
 
+void tests (int tests_number)
+{
+    srand((unsigned) time(0));
 
+    high_resolution_clock::time_point start;
+    high_resolution_clock::time_point stop;
+    duration<double> time;
+
+
+    int i, j, k;
+    int m=20;
+    for (k=0; k<tests_number; k++)
+    {
+        vector<vector<int>> table(m, vector<int>(20));
+
+            for (j=0; j<table.size(); j++)
+            {
+                for (i=0; i<table[j].size(); i++)
+                {
+                table[j][i] = rand();
+                }
+            }
+        start = high_resolution_clock::now();
+        spiral_spin(table);
+        stop = high_resolution_clock::now();
+        time = stop - start;
+        cout<< setw(15) << time.count() << endl;
+
+
+        m*=2;
+    }
+}
 
 
 int main()
 {
+    tests(30);
+    //vector<vector<int>> table;
+    //initialize_table(table);
+    //print_table(table);
 
-    vector<vector<int>> table;
-    initialize_table(table);
-    print_table(table);
-    spiral_spin(table);
-    cout<<endl;
-    cout<<"Table after spin";
-    print_table(table);
-    save_table_to_txt(table);
+
+
+
+
+    //spiral_spin(table);
+
+
+
+    //cout<<endl;
+    //cout<<"Table after spin";
+    //print_table(table);
+    //save_table_to_txt(table);
+
 
 
     return 0;
