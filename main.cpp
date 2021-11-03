@@ -1,6 +1,3 @@
-/* For given two-dimensional M x N table shift all its
-elements in spiral direction */
-
 #include <iostream>
 #include <vector>
 #include <chrono>
@@ -9,101 +6,113 @@ elements in spiral direction */
 #include <cstdlib>
 #include <iomanip>
 
+
 using namespace std;
 using namespace std::chrono;
 
 
+// Funkcja zwracająca tabelę utworzoną przy  pomocy szablonu klasy
+// Użytkownik wprowadza rozmiar tablicy z klawiatury
 
-/*
-in function "create_table by using vector
-template object "table" is created
-*/
 
 vector<vector<int>> create_table()
 {
-    int m=0, n=0;
-    cout << "Enter M i N" <<endl;
+    int m = 0, n = 0;
+    cout << "Enter M i N" << endl;
     while (true)
     {
-    cin >> m;
-    cin >> n;
-    if (m > 0 && n > 0)
-        break;
-    cout<<"Number of rows and columns have to be positive"<<endl;
+        cin >> m;
+        cin >> n;
+        if (m > 0 && n > 0)
+            break;
+
+        cout << "Number of rows and columns have to be positive" << endl;
     }
+
     vector<vector<int>> table(m, vector<int>(n));
     return table;
 }
 
+// Funkcja wczytująca tablice z pliku txt i zwracająca ją jako obiekt klasy vector
+
 vector<vector<int>> read_table_from_txt()
-{   string table_txt = "table.txt";
-    ifstream in (table_txt);
+{
+    string table_txt = "table.txt";
+    ifstream in(table_txt);
     string line;
 
+    // Funkcja liczy liczbę wierszy, a następnie wskaźnik ustawiany jest ponownie na początek pliku
+
     int line_count = 0;
-    while(getline(in, line))
+    while (getline(in, line))
         line_count++;
 
     in.clear();
     in.seekg(0);
 
+    // Przy tworzeniu obiektu, którym jest nasza tablica musimy zadeklarować jej wymiary
+    // Liczbę wierszy przekazuje zmienna line_count. Liczbę kolumn deklarujemy początkowo jako 0
+
     vector<vector<int>> table(line_count, vector<int>(0));
     int buffor;
     int i = 0;
 
-    while(getline(in, line))
+    while (getline(in, line))
     {
-        stringstream ss(line);
+        // Linie pliku są odczytywane jako stringi
+        // Tworzymy strumień, który będzie mógł przekazać te linie do zmiennej typu int
+        // Następnie korzystamy z metody klasy vector i dopisujujemy, do każdego wiersza tablicy linię z pliku txt
 
-            while(ss >> buffor)
+        stringstream ss(line);
+        while(ss >> buffor)
             table[i].push_back(buffor);
+
         i++;
     }
     return table;
-
 }
+
+// Funkcja do wypełniania tablicy przez użytkownika albo losowo
+// Funkcja działa bezpośrednio na obiekcie tablica,
+// ponieważ przekazany został do niej jej adres pamięci
 
 void fill_table(vector<vector<int>> &table)
 {
     int i, j;
-    cout << "Do you prefer to fill table manually or randomly?" <<endl;
-    cout << "Press 1 for manual option or 2 for automatic option" <<endl;
+    cout << "Do you prefer to fill table manually or randomly?" << endl;
+    cout << "Press 1 for manual option or 2 for automatic option" << endl;
     int choice;
     cin >> choice;
     switch (choice)
     {
-        case 1:
+    case 1:
+        {
+        for (j=0; j < table.size(); j++)
             {
-            for (j=0; j<table.size(); j++)
-            {
-                cout<<"enter elements: " << j <<"-th row"<<endl;
-                for (i=0; i<table[j].size(); i++)
+                cout <<"enter elements: " << j <<"-th row"<< endl;
+                for (i = 0; i < table[j].size(); i++)
                 {
-                    cin>>table[j][i];
+                    cin >> table[j][i];
                 }
             }
-            break;
-            }
+        break;
 
-
-        case 2:
+    case 2:
+        {
+        srand((unsigned) time(0));
+        for (j = 0; j < table.size(); j++)
+        {
+            for (i = 0; i < table[j].size(); i++)
             {
-            srand((unsigned) time(0));
-            for (j=0; j<table.size(); j++)
-            {
-                for (i=0; i<table[j].size(); i++)
-                {
-                table[j][i] = rand();
-                }
+            table[j][i] = rand();
             }
-            break;
-            }
-
-
+        }
+        break;
+        }
     }
-
-
 }
+
+// Funkcja dająca możliwość wyboru inicjalizacji tablicy
 
 void initialize_table(vector<vector<int>> &table)
 {
@@ -125,46 +134,50 @@ void initialize_table(vector<vector<int>> &table)
 }
 
 
-
-
-
-
+// Funkcja do wypisywania elementów tablicy
 
 void print_table(vector<vector<int>> table)
 {
     int i, j;
-    for (j=0; j<table.size(); j++)
-    {   cout<<endl;
-        for (i=0; i<table[j].size(); i++)
+    for (j =0 ; j < table.size(); j++)
+    {   cout << endl;
+        for (i = 0; i < table[j].size(); i++)
         {
-            cout<<table[j][i];
-            cout<<" ";
+            cout << table[j][i];
+            cout << " ";
         }
     }
 }
 
+// Funkcja wykonująca spiralny obrót elementami tablicy o jeden indeks w kierunku ruchu zegara
+// Środkowy element staje się pierwszym
 
 void spiral_spin(vector<vector<int>> &table)
 {
+    // Zmienne przechowujące skrajne indeksy elementów tablicy
     int top = 0, bottom = table.size() - 1;
     int left = 0, right = table[0].size() - 1;
+
+    // zmienna przechowująca zamieniany element tablicy
     int prev = table[0][0];
 
     while (true)
     {
 
-        // change top row
+        // Przestawienie elementów górnego wiersza
         for (int i = left; i <= right; i++) {
             swap(table[top][i], prev);
         }
-
+        // Nie będziemy zajmować się już górnym wierszem dlatego zwiększamy indeks zmiennej top o 1
+        // Idziemy w dół tablicy
         top++;
 
+        // Jeżeli zmiany zachodziły w ostatnim niezmienionym wierszu przerywamy działanie funkcji
         if (top > bottom) {
             break;
         }
 
-        // change right column
+        // Zamiana elementów prawej kolumny
         for (int i = top; i <= bottom; i++) {
             swap(table[i][right], prev);
         }
@@ -175,7 +188,7 @@ void spiral_spin(vector<vector<int>> &table)
             break;
         }
 
-        // change bottom row
+        // Zamiana elementów dolnego wiersza
         for (int i = right; i >= left; i--) {
             swap(table[bottom][i], prev);
         }
@@ -186,7 +199,7 @@ void spiral_spin(vector<vector<int>> &table)
             break;
         }
 
-        // change left column
+        // Zamiana elementów lewej kolumny
         for (int i = bottom; i >= top; i--) {
             swap(table[i][left], prev);
         }
@@ -194,11 +207,11 @@ void spiral_spin(vector<vector<int>> &table)
         left++;
     }
 
-    // the first element of the matrix will be the last element replaced
+    // Pierwszym elementem tablicy będzie ostatni zamieniony element
     table[0][0] = prev;
 }
 
-//chcemy, �eby mo�na by�o r�wnie� wczytywa� zapisany ju� txt do vector<vector<int>>
+//Funkcja zapisująca do pliku txt utworzoną tablicę
 
 void save_table_to_txt (vector<vector<int>> &table)
 {
@@ -217,24 +230,28 @@ void save_table_to_txt (vector<vector<int>> &table)
     table_txt.close();
 }
 
+// Funkcja przeprowadzająca testy czasu działania funkcji "spiral_spin" dla różnych wymiarów tablicy
+
 void tests (int tests_number)
 {
+    ofstream test_results_txt;
+    test_results_txt.open("test_results_txt.txt");
     srand((unsigned) time(0));
 
     high_resolution_clock::time_point start;
     high_resolution_clock::time_point stop;
     duration<double> time;
 
-
     int i, j, k;
-    int m=20;
-    for (k=0; k<tests_number; k++)
+    int m = 20;
+    int n = 20;
+    for (k = 0; k < tests_number; k++)
     {
-        vector<vector<int>> table(m, vector<int>(20));
+        vector<vector<int>> table(m, vector<int>(n));
 
-            for (j=0; j<table.size(); j++)
+            for (j = 0; j < table.size(); j++)
             {
-                for (i=0; i<table[j].size(); i++)
+                for (i = 0; i < table[j].size(); i++)
                 {
                 table[j][i] = rand();
                 }
@@ -243,35 +260,29 @@ void tests (int tests_number)
         spiral_spin(table);
         stop = high_resolution_clock::now();
         time = stop - start;
-        cout<< setw(15) << time.count() << endl;
 
 
-        m*=2;
+        // Zapisywanie wyników do pliku txt
+        test_results_txt << "Execute time        " << setw(15) << time.count();
+        test_results_txt << "     Number of elements      " << m * n << endl;
+
+        //dwukrotne zwiększanie liczby wierszy
+        m *=2;
     }
+    test_results_txt.close();
 }
 
 
 int main()
 {
-    tests(30);
-    //vector<vector<int>> table;
-    //initialize_table(table);
-    //print_table(table);
-
-
-
-
-
-    //spiral_spin(table);
-
-
-
-    //cout<<endl;
-    //cout<<"Table after spin";
-    //print_table(table);
+    //tests(19);
+    vector<vector<int>> table;
+    initialize_table(table);
+    print_table(table);
+    spiral_spin(table);
+    cout << endl;
+    cout << "Table after spin" << endl;
+    print_table(table);
     //save_table_to_txt(table);
-
-
-
     return 0;
 }
