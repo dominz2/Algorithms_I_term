@@ -96,6 +96,7 @@ void fill_table(vector<vector<int>> &table)
                 }
             }
         break;
+        }
 
     case 2:
         {
