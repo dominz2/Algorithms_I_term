@@ -98,7 +98,7 @@ void fill_table(vector<vector<int>> &table)
         break;
         }
 
-    case 2:
+    default:
         {
         srand((unsigned) time(0));
         for (j = 0; j < table.size(); j++)
