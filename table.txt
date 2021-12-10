@@ -1,0 +1,10 @@
+Execute time              0
+Execute time              0
+Execute time              0
+Execute time              0
+Execute time              0
+Execute time              0
+Execute time              0
+Execute time      0.0009974
+Execute time      0.0019948
+Execute time      0.0039896
